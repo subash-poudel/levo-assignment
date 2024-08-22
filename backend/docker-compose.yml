@@ -11,7 +11,7 @@ services:
       - DB_HOST=db
       - DB_USER=postgres
       - DB_PASSWORD=password
-      - DB_NAME=postgres
+      - DB_NAME=calendar
     volumes:
       - .:/backend  # Mount the current directory to /app in the container
       - /backend/node_modules  # Ensure node_modules is not overwritten
@@ -21,7 +21,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+      POSTGRES_DB: calendar
     ports:
       - "5432:5432"
     volumes:

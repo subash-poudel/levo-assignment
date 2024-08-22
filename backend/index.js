@@ -1,26 +1,23 @@
 const express = require("express");
-const { Sequelize } = require("sequelize");
+const  eventRouter = require("./apis/event/eventRouter");
+const sequelize = require("./utils/sequelizeUtil");
+const bodyParser = require('body-parser');
+const errorHandlerMiddleware = require("./utils/errorHandler");
+
+require("dotenv").config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Set up a Sequelize instance
-const sequelize = new Sequelize("postgres", "postgres", "password", {
-  host: "db",
-  dialect: "postgres",
-});
-
-// Test the database connection
 sequelize
-  .authenticate()
-  .then(() => console.log("Database connected..."))
-  .catch((err) => console.log("Error: " + err));
+.authenticate()
+.then(() => console.log("Database connected..."))
+.catch((err) => console.log("Error: " + err));
 
-// Basic route
-app.get("/", (req, res) => {
-  console.log("get request called");
-  res.send("Hello World this is a test and new test oho lols 3!");
-});
+app.use(bodyParser.json());
+// routes
+app.use("/event", eventRouter);
+app.use(errorHandlerMiddleware);
 
 app.listen(port, () => {
   console.log(`App running on http://localhost:${port}`);
