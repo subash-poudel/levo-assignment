@@ -1,8 +1,9 @@
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import MyCalendar from "./components/MyCalendar";
+
 const queryClient = new QueryClient();
 
-import MyCalendar from "./components/MyCalendar";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
