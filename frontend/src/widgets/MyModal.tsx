@@ -27,16 +27,18 @@ const MyModal: React.FC<MyModalProps> = ({ isOpen, closeModal }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h2>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
+        <div className="bg-yellow-100">
+          <h2 className="text-8xl">Hello</h2>
+          <button onClick={closeModal}>close</button>
+          <p className="bg-red-400">I am a modal</p>
+          <form>
+            <input />
+            <button>tab navigation</button>
+            <button>stays</button>
+            <button>inside</button>
+            <button>the modal</button>
+          </form>
+        </div>
       </Modal>
     </div>
   );
