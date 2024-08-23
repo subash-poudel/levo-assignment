@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import MyModal from "../widgets/MyModal";
+import CreateEventModal from "./CreateEventModal";
 
 // Set up localizer
 const localizer = momentLocalizer(moment);
@@ -25,7 +25,7 @@ const MyCalendar = () => {
 
   return (
     <div>
-      <MyModal
+      <CreateEventModal
         isOpen={showcreateEventPopup}
         closeModal={() => setShowCreateEventPopup(false)}
       />
