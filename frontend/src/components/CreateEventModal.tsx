@@ -4,6 +4,9 @@ import { useFormik } from "formik";
 import { CreateEventFormModel } from "../models/formikModels";
 import { createEventValidationSchema } from "../validators/formikValidators";
 import { FormErrorLabel } from "../widgets/FormErrorLabel";
+import { DateFormat, formatDateToString } from "../utils/dateUtil";
+import { useMutation } from "@tanstack/react-query";
+import { postData } from "../utils/api";
 
 const customStyles = {
   content: {
@@ -19,33 +22,70 @@ const customStyles = {
 };
 
 Modal.setAppElement("#root");
-interface MyModalProps {
+interface CreateEventModalProps {
   isOpen: boolean;
   closeModal: () => void;
+  startDate: Date | null | undefined;
+  endDate: Date | null | undefined;
 }
-const CreateEventModal: React.FC<MyModalProps> = ({ isOpen, closeModal }) => {
+const CreateEventModal: React.FC<CreateEventModalProps> = ({
+  isOpen,
+  closeModal,
+  startDate,
+  endDate,
+}) => {
+  const { isError, mutate } = useMutation({
+    mutationFn: (event) => {
+      return postData(event, "/event");
+    },
+    onSuccess: (data) => {
+      closeModal();
+    },
+    onError: (error) => {
+      console.error("on error", error);
+    },
+  });
+
+  // Replace is used because T is interpreted as unix timestamp but html input element needs it
+  const eventStart = startDate
+    ? formatDateToString(startDate, DateFormat["yyyy-MM-ddThh:mm"]).replace(
+        "$$",
+        "T"
+      )
+    : "";
+  const eventEnd = endDate
+    ? formatDateToString(endDate, DateFormat["yyyy-MM-ddThh:mm"]).replace(
+        "$$",
+        "T"
+      )
+    : "";
   const initialValues: CreateEventFormModel = {
     title: "",
     description: "",
-    startDate: "",
-    endDate: "",
+    startDate: eventStart,
+    endDate: eventEnd,
     participants: "",
   };
-  const {
-    values,
-    errors,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-    touched,
-    isSubmitting,
-  } = useFormik<CreateEventFormModel>({
-    initialValues: initialValues,
-    validationSchema: createEventValidationSchema,
-    onSubmit: (values) => {
-      console.log("got values", values);
-    },
-  });
+
+  const { values, errors, handleSubmit, handleChange, handleBlur, touched } =
+    useFormik<CreateEventFormModel>({
+      initialValues: initialValues,
+      validationSchema: createEventValidationSchema,
+      onSubmit: (values) => {
+        const payload = {
+          title: values.title,
+          description: values.description,
+          start_date: values.startDate,
+          end_date: values.endDate,
+          // todo make participants json
+          participants: "",
+          // todo handle/create cron
+          cron: "*****",
+        };
+        console.log("got values", values);
+        mutate(payload);
+      },
+    });
 
   return (
     <div>
@@ -79,7 +119,7 @@ const CreateEventModal: React.FC<MyModalProps> = ({ isOpen, closeModal }) => {
             <input
               className="h-10 border border-gray-300 rounded px-2"
               type="text"
-              name="desciption"
+              name="description"
               placeholder="Event Description"
               onChange={handleChange}
               onBlur={handleBlur}
@@ -124,14 +164,16 @@ const CreateEventModal: React.FC<MyModalProps> = ({ isOpen, closeModal }) => {
             <FormErrorLabel show={touched.endDate} errorText={errors.endDate} />
           </div>
           <div className="text-center">
-
-          <button
-            type="submit"
-            className="bg-green-400 text-white font-bold py-2 px-4 rounded-full self-center"
+            {isError && (
+              <FormErrorLabel show={true} errorText="Couldnt create event." />
+            )}
+            <button
+              type="submit"
+              className="bg-green-400 text-white font-bold py-2 px-4 rounded-full self-center"
             >
-            Create
-          </button>
-            </div>
+              Create
+            </button>
+          </div>
         </form>
       </Modal>
     </div>

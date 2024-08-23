@@ -9,6 +9,10 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
   const [showcreateEventPopup, setShowCreateEventPopup] = useState(false);
+  const [eventTime, setEventTime] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  } | null>(null);
   // Sample events
   const [events, setEvents] = useState([
     {
@@ -26,8 +30,11 @@ const MyCalendar = () => {
   return (
     <div>
       <CreateEventModal
+        key={showcreateEventPopup ? 1 : 0}
         isOpen={showcreateEventPopup}
         closeModal={() => setShowCreateEventPopup(false)}
+        startDate={eventTime?.startDate}
+        endDate={eventTime?.endDate}
       />
       <h2>My Calendar</h2>
       <Calendar
@@ -39,11 +46,10 @@ const MyCalendar = () => {
         selectable
         onSelectSlot={(slotInfo) => {
           const { start, end } = slotInfo;
+          setEventTime({ startDate: start, endDate: end });
           setShowCreateEventPopup(!showcreateEventPopup);
-          console.log({ start, end });
         }}
       />
-      
     </div>
   );
 };
