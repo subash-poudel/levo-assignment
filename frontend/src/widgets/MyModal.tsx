@@ -9,7 +9,9 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    background: "#D3D3D3",
   },
+  overlay: { zIndex: 1000 },
 };
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
@@ -25,10 +27,10 @@ const MyModal: React.FC<MyModalProps> = ({ isOpen, closeModal }) => {
         isOpen={isOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        shouldCloseOnEsc={true}
       >
         <div className="bg-yellow-100">
-          <h2 className="text-8xl">Hello</h2>
+          <h2>Hello</h2>
           <button onClick={closeModal}>close</button>
           <p className="bg-red-400">I am a modal</p>
           <form>

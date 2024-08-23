@@ -25,6 +25,10 @@ const MyCalendar = () => {
 
   return (
     <div>
+      <MyModal
+        isOpen={showcreateEventPopup}
+        closeModal={() => setShowCreateEventPopup(false)}
+      />
       <h2>My Calendar</h2>
       <Calendar
         localizer={localizer}
@@ -39,10 +43,7 @@ const MyCalendar = () => {
           console.log({ start, end });
         }}
       />
-      <MyModal
-        isOpen={showcreateEventPopup}
-        closeModal={() => setShowCreateEventPopup(false)}
-      />
+      
     </div>
   );
 };
