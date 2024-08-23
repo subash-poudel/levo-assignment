@@ -9,5 +9,6 @@ eventRouter.post(
   eventController.createEvent
 );
 eventRouter.get("/", eventController.getAllEvents);
+eventRouter.delete("/:id", eventController.deleteEvent);
 
 module.exports = eventRouter;

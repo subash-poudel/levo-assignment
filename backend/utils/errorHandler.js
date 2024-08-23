@@ -5,8 +5,6 @@ function errorHandlerMiddleware(err, req, res, next) {
 }
 
 function buildError(err) {
-//   console.log(err);
-    console.log('build error is called');
   if (err.isJoi) {
     return {
       code: 400,

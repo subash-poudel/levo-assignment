@@ -13,7 +13,6 @@ function createEventValidator(req, res, next) {
   return validate(req.body, createEventSchema)
     .then(() => next())
     .catch((err) => {
-      console.log(' in schema catch block');
       next(err)
     });
 }

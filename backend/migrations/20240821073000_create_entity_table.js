@@ -9,8 +9,8 @@ exports.up = function (knex) {
     table.string("title", 255).notNullable();
     table.string("description", 255).notNullable();
     table.string("participants", 3000).notNullable();
-    table.date("start_date").notNullable();
-    table.date("end_date").notNullable();
+    table.dateTime("start_date").notNullable();
+    table.datetime("end_date").notNullable();
     table.string("cron", 50).notNullable();
     table.timestamps(true, true);
   });

@@ -4,8 +4,12 @@ import { useFormik } from "formik";
 import { CreateEventFormModel } from "../models/formikModels";
 import { createEventValidationSchema } from "../validators/formikValidators";
 import { FormErrorLabel } from "../widgets/FormErrorLabel";
-import { DateFormat, formatDateToString } from "../utils/dateUtil";
-import { useMutation } from "@tanstack/react-query";
+import {
+  DateFormat,
+  formatDateToString,
+  formatDateUsingISO,
+} from "../utils/dateUtil";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "../utils/api";
 
 const customStyles = {
@@ -34,11 +38,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   startDate,
   endDate,
 }) => {
+  const queryClient = useQueryClient();
   const { isError, mutate } = useMutation({
     mutationFn: (event) => {
       return postData(event, "/event");
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
       closeModal();
     },
     onError: (error) => {
@@ -75,14 +81,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
         const payload = {
           title: values.title,
           description: values.description,
-          start_date: values.startDate,
-          end_date: values.endDate,
+          start_date: formatDateUsingISO(values.startDate),
+          end_date: formatDateUsingISO(values.endDate),
           // todo make participants json
           participants: "",
           // todo handle/create cron
           cron: "*****",
         };
-        console.log("got values", values);
         mutate(payload);
       },
     });
@@ -131,13 +136,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
             />
           </div>
           <div className="flex flex-col my-2">
-            <label className="text-lg" htmlFor="start">
+            <label className="text-lg" htmlFor="startDate">
               Starts at:
             </label>
             <input
               className="h-10 border border-gray-300 rounded px-2"
               type="datetime-local"
-              name="start"
+              name="startDate"
               placeholder="Event starts at"
               onChange={handleChange}
               onBlur={handleBlur}
@@ -149,13 +154,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
             />
           </div>
           <div className="flex flex-col my-2">
-            <label className="text-lg" htmlFor="end">
+            <label className="text-lg" htmlFor="endDate">
               Ends at:
             </label>
             <input
               className="h-10 border border-gray-300 rounded px-2"
               type="datetime-local"
-              name="end"
+              name="endDate"
               placeholder="Ends at:"
               onChange={handleChange}
               onBlur={handleBlur}
