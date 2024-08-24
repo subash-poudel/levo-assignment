@@ -4,6 +4,7 @@ const sequelize = require("./utils/sequelizeUtil");
 const bodyParser = require("body-parser");
 const errorHandlerMiddleware = require("./utils/errorHandler");
 const cors = require("cors");
+const connectToRabbitMq = require("./utils/rabbitmqHelper");
 
 require("dotenv").config();
 
@@ -18,9 +19,12 @@ sequelize
   .catch((err) => console.log("Error: " + err));
 
 app.use(bodyParser.json());
+connectToRabbitMq(app);
+
 // routes
 app.use("/event", eventRouter);
 app.use(errorHandlerMiddleware);
+
 
 app.listen(port, () => {
   console.log(`App running on http://localhost:${port}`);
