@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -13,8 +13,8 @@ services:
       - DB_PASSWORD=password
       - DB_NAME=calendar
     volumes:
-      - .:/backend  # Mount the current directory to /app in the container
-      - /backend/node_modules  # Ensure node_modules is not overwritten
+      - .:/backend # Mount the current directory to /app in the container
+      - /backend/node_modules # Ensure node_modules is not overwritten
 
   db:
     image: postgres:15
@@ -28,18 +28,40 @@ services:
       - db_data:/var/lib/postgresql/data
   
   rabbitmq:
-    image: rabbitmq:3.11-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"      # RabbitMQ main port
-      - "15672:15672"    # Management console port
+    image: heidiks/rabbitmq-delayed-message-exchange:latest
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
-      RABBITMQ_DEFAULT_VHOST: /
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq   # Persist RabbitMQ data    
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_VHOST=/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # rabbitmq:
+  #   # image: rabbitmq:3.11-management
+  #   image: heidiks/rabbitmq-delayed-message-exchange:latest
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "5672:5672" # RabbitMQ main port
+  #     - "15672:15672" # Management console port
+  #   environment:
+  #     # RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+  #     RABBITMQ_DEFAULT_USER: user
+  #     RABBITMQ_DEFAULT_PASS: password
+  #     # RABBITMQ_DEFAULT_VHOST: /
+  #     # RABBITMQ_PLUGINS_FILE: "/etc/rabbitmq/enabled_plugins"
+  #   # volumes:
+  #   #   - rabbitmq_data:/var/lib/rabbitmq # Persist RabbitMQ data
+  #   #   - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+  #   # networks:
+  #   #   - rabbitmq_network
+  #   # command: >
+  #   #   sh -c "rabbitmq-plugins enable --offline rabbitmq_delayed_message_exchange &&
+  #   #          rabbitmq-server"
 
 volumes:
   db_data:
   rabbitmq_data:
+
+networks:
+  rabbitmq_network:

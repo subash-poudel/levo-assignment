@@ -17,7 +17,8 @@ sequelize
   .authenticate()
   .then(() => console.log("Database connected..."))
   .catch((err) => console.log("Error: " + err));
-rabbitMq.initializeRabitMq()
+// rabbitMq.initializeRabitMq()
+rabbitMq.connectToRabbitMQ()
 app.use(bodyParser.json());
 
 // routes
