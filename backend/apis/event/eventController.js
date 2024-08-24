@@ -1,8 +1,11 @@
 const Event = require("./eventModel");
+const rabbitMq = require("../../utils/rabbitmqHelper");
 
 function createEvent(req, res, next) {
   Event.create(req.body)
     .then((event) => {
+      // send notification message to rabbitmq
+      rabbitMq.sendMessageToRabbitMq({ event: event });
       return res.status(201).json({ event });
     })
     .catch((err) => {

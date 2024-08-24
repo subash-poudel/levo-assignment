@@ -4,7 +4,7 @@ const sequelize = require("./utils/sequelizeUtil");
 const bodyParser = require("body-parser");
 const errorHandlerMiddleware = require("./utils/errorHandler");
 const cors = require("cors");
-const connectToRabbitMq = require("./utils/rabbitmqHelper");
+const rabbitMq = require("./utils/rabbitmqHelper");
 
 require("dotenv").config();
 
@@ -17,9 +17,8 @@ sequelize
   .authenticate()
   .then(() => console.log("Database connected..."))
   .catch((err) => console.log("Error: " + err));
-
+rabbitMq.initializeRabitMq()
 app.use(bodyParser.json());
-connectToRabbitMq(app);
 
 // routes
 app.use("/event", eventRouter);
